@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:XamarinMaps"
+			 xmlns:maps="clr-namespace:Xamarin.Forms.Maps;assembly=Xamarin.Forms.Maps"
+             x:Class="XamarinMaps.MainPage">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="45" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <StackLayout Grid.Row="0"
+                     Orientation="Horizontal">
+            <Picker Title="Select a bus number" 
+                    
+                    ItemsSource="{Binding BusNumbers}"                     
+                    SelectedItem="{Binding SelectedBus}" />
+            <Button Text="Find" 
+                    Command="{Binding FindBusCommand}" 
+                    />
+        </StackLayout>
+        <local:BindableMap Grid.Row="1" 
+                           MapType="Street" 
+                           MapPosition="{Binding MyPosition}" 
+                           MapPins="{Binding PinCollection}" />
+    </Grid>
+</ContentPage>
