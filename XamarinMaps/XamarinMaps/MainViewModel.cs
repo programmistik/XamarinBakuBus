@@ -20,8 +20,7 @@ namespace XamarinMaps
 {
 	public class MainViewModel : INotifyPropertyChanged
 	{
-        public ICommand FindBusCommand { protected set; get; }
-
+       
         private ObservableCollection<Pin> _pinCollection = new ObservableCollection<Pin>();
         public ObservableCollection<Pin> PinCollection { get { return _pinCollection; } set { _pinCollection = value; OnPropertyChanged(); } }
 
@@ -101,8 +100,7 @@ namespace XamarinMaps
 
         public MainViewModel()
         {
-            FindBusCommand = new Command(FindBus);
-
+            
             Items = new List<BusPins>();
 
             Task.Run(async () =>
@@ -118,9 +116,12 @@ namespace XamarinMaps
             BusNumbers = new ObservableCollection<string>(Numbers);
 
             });
+
+            Device.StartTimer(TimeSpan.FromSeconds(5), OnTimerTick);
         }
 
-        private void FindBus()
+       
+        private bool OnTimerTick()
         {
             Task.Run(async () =>
             {
@@ -136,23 +137,9 @@ namespace XamarinMaps
                         PinCollection.Add(new Pin() { Position = new Position(item.Latitude, item.Longitude), Type = PinType.Generic, Label = item.BusNumber });
                     }
                 }
-            });
-
-            Device.StartTimer(TimeSpan.FromSeconds(10), OnTimerTick);
-        }
-
-        private bool OnTimerTick()
-        {
-            Task.Run(async () =>
-            {
-                Items.Clear();
-                Items = await RefreshDataAsync();
-                PinCollection.Clear();
-
-                if (SelectedBus != null)
+                else
                 {
-                    var qw = Items.Where(n => n.BusNumber == SelectedBus);
-                    foreach (var item in qw)
+                    foreach (var item in Items)
                     {
                         PinCollection.Add(new Pin() { Position = new Position(item.Latitude, item.Longitude), Type = PinType.Generic, Label = item.BusNumber });
                     }
